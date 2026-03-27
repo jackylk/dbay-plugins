@@ -1,20 +1,20 @@
 ---
-name: dbay-memory
-description: "Use when the user says '记住/remember/save this' to store information, OR when the user asks about past decisions, conventions, credentials, or context that might have been discussed before. Calls dbay CLI to persist memories across projects, sessions, and devices. Also use proactively when you discover important information worth preserving (credentials, decisions, rejections, conventions)."
+name: memory
+description: "Use when the user says '记住/remember/save this' to store information, OR when the user asks about past decisions, conventions, credentials, or context that might have been discussed before. Persists memories across projects, sessions, and devices via dbay MCP. Also use proactively when you discover important information worth preserving (credentials, decisions, rejections, conventions)."
 ---
 
 # DBay Memory — Cross-Project Long-Term Memory
 
-You have access to the user's persistent memory via the `dbay` CLI. This memory survives across projects, sessions, and devices.
+You have access to the user's persistent memory via the dbay MCP tools. This memory survives across projects, sessions, and devices.
 
 <HARD-GATE>
-When the user says "记住/remember/save this", you MUST call `dbay mem ingest` via the Bash tool.
+When the user says "记住/remember/save this", you MUST call the dbay MCP `memory_ingest` tool.
 Do NOT rely solely on local/built-in memory files. DBay memory is the user's primary long-term store.
 </HARD-GATE>
 
 ## When to Use
 
-### Store (dbay mem ingest)
+### Store (memory_ingest)
 - User explicitly says "记住", "remember", "save this", "记到记忆库"
 - You discover credentials, API keys, tokens
 - A decision is made with rationale
@@ -23,20 +23,21 @@ Do NOT rely solely on local/built-in memory files. DBay memory is the user's pri
 - A notable incident or debugging story occurs
 - A step-by-step procedure is documented
 
-### Recall (dbay mem recall)
+### Recall (memory_recall)
 - User asks "之前怎么做的", "what did we decide", "我的 API key 是什么"
 - User asks about past decisions, conventions, or context
 - Before starting a task, proactively check for relevant prior context
 - When you need credentials or configuration that was previously stored
 
-## Commands
+## MCP Tools
 
 ### Store a memory
-```bash
-dbay mem ingest <base_id> "<content>" --type <memory_type> --importance <0.0-1.0>
-```
+Call `mcp__dbay__memory_ingest` with:
+- `content`: The memory content — concise, structured, self-contained
+- `memory_type`: One of the types below
+- `importance`: 0.0-1.0
 
-**Memory types — choose the correct one:**
+### Memory types — choose the correct one:
 | Type | When to use | Example |
 |------|-------------|---------|
 | `fact` | Credentials, preferences, specs | "PyPI token is pypi-xxx" |
@@ -46,21 +47,20 @@ dbay mem ingest <base_id> "<content>" --type <memory_type> --importance <0.0-1.0
 | `procedural` | Step-by-step procedures | "deploy flow: build → push → deploy.sh" |
 | `episode` | Incidents, debugging stories | "OOM caused by unbounded query cache, fixed with LRU eviction" |
 
-**Importance guidelines:**
+### Importance guidelines:
 - `0.9` — Credentials, critical decisions, painful lessons
 - `0.7` — Conventions, procedures
 - `0.5` — General facts, preferences
 
 ### Recall memories
-```bash
-dbay mem recall <base_id> "<query>" [--type <filter>] [--top-k <n>]
-```
+Call `mcp__dbay__memory_recall` with:
+- `query`: Natural language search query
+- `memory_types`: Optional filter (list of types)
+- `top_k`: Number of results (default 10)
 
-### Get base_id
-If you don't know the base_id, check `~/.dbay/config.json` for `memory_base`, or run:
-```bash
-dbay mem list
-```
+### Browse and manage
+- `mcp__dbay__memory_list` — Browse memories, filter by type
+- `mcp__dbay__memory_delete` — Delete a specific memory by ID
 
 ## Rules
 
