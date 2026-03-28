@@ -1,0 +1,29 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dbay",
+  "owner": {
+    "name": "jackylk"
+  },
+  "metadata": {
+    "description": "DBay plugins for persistent cross-project memory and knowledge base integration",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "memory",
+      "source": "./",
+      "description": "Cross-project long-term memory via dbay MCP. Stores and recalls decisions, credentials, conventions, and context across projects and sessions.",
+      "version": "1.0.0",
+      "keywords": [
+        "memory",
+        "remember",
+        "recall",
+        "dbay",
+        "long-term-memory"
+      ],
+      "skills": [
+        "./skills/memory"
+      ]
+    }
+  ]
+}
