@@ -10,7 +10,7 @@
   },
   "plugins": [
     {
-      "name": "memory",
+      "name": "dbay-mem",
       "source": "./",
       "description": "Cross-project long-term memory via dbay MCP. Stores and recalls decisions, credentials, conventions, and context across projects and sessions.",
       "version": "1.0.0",
@@ -22,7 +22,7 @@
         "long-term-memory"
       ],
       "skills": [
-        "./skills/memory"
+        "./skills/dbay-mem"
       ]
     }
   ]

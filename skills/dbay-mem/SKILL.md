@@ -1,5 +1,5 @@
 ---
-name: memory
+name: dbay-mem
 description: "Use when the user says '记住/remember/save this' to store information, OR when the user asks about past decisions, conventions, credentials, or context that might have been discussed before. Persists memories across projects, sessions, and devices via dbay MCP. Also use proactively when you discover important information worth preserving (credentials, decisions, rejections, conventions)."
 ---
 
