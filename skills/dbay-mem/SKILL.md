@@ -62,6 +62,52 @@ Call `mcp__dbay__memory_recall` with:
 - `mcp__dbay__memory_list` — Browse memories, filter by type
 - `mcp__dbay__memory_delete` — Delete a specific memory by ID
 
+## Auto-Recall at Session Start
+
+DBay memory supports automatic recall via a SessionStart hook. When configured, every new Claude Code session starts with your conventions, decisions, and preferences automatically loaded.
+
+### Setup (one-time)
+
+1. Create the hook script `~/.claude/hooks/session-recall.sh`:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+CONFIG="$HOME/.dbay/config.json"
+[ -f "$CONFIG" ] || exit 0
+MEMORY_BASE=$(python3 -c "import json; print(json.load(open('$CONFIG')).get('memory_base',''))" 2>/dev/null) || exit 0
+[ -n "$MEMORY_BASE" ] || exit 0
+MEMORIES=$(dbay mem recall "$MEMORY_BASE" "conventions decisions preferences feedback procedures" --limit 10 2>/dev/null) || exit 0
+[ -n "$MEMORIES" ] || exit 0
+python3 -c "
+import json, sys
+memories = sys.stdin.read().strip()
+if not memories: sys.exit(0)
+print(json.dumps({'hookSpecificOutput': {'hookEventName': 'SessionStart', 'additionalContext': '## DBay Memory (auto-recall)\n' + memories}}))
+" <<< "$MEMORIES"
+```
+
+2. Make it executable: `chmod +x ~/.claude/hooks/session-recall.sh`
+
+3. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "bash ~/.claude/hooks/session-recall.sh",
+        "timeout": 10,
+        "statusMessage": "Recalling dbay memories..."
+      }]
+    }]
+  }
+}
+```
+
+After setup, every new session will automatically load your stored conventions and decisions.
+
 ## Rules
 
 1. **Extract MULTIPLE memories** from a single user message when appropriate.
